@@ -36,11 +36,26 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
         
         Database.database().reference().child("jobPosters").child(job.posterID!).child("upcomingJobs").child(job.jobID!).child("timeLogs").child(Auth.auth().currentUser!.uid).updateChildValues(["studentConfirmsArrival": now])
     }
+    func secondsToHoursMinutesSeconds (seconds : Int) -> (Int, Int, Int) {
+        return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
+    }
     var counter = 0.0
     var timer = Timer()
+    var hours = Int()
+    var minutes = Int()
+    var seconds = Int()
+    
     func UpdateTimer() {
+        
+        let (h,m,s) = secondsToHoursMinutesSeconds(seconds: Int(counter))
+        
+        self.hours = h
+        self.minutes = m
+        self.seconds = s
+        
         counter = counter + 0.1
-        timerLabel.text = String(format: "%.1f", counter)
+        
+        timerLabel.text = "\(h)hours \(m)minutes \(s)seconds"
     }
     func studentStartsJobDatabaseUpload(){
         let dateFormatter = DateFormatter()
@@ -66,7 +81,8 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
         print("startTimerTime: \(startTimerTime)")
         let elapsed = Date().timeIntervalSince(startTimerTime)
         print("timeElapsed: \(elapsed)")
-        //var temp = (elapsed/10) * 60
+        var temp = (elapsed/10) * 60
+        
         let min = elapsed/60
         let hours = min/60
         let payoutAmountPennies = ((hours * 15) * 100)
@@ -176,6 +192,8 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
             }
         }
     }
+    
+    
     
     func handleAddPaymentMethodButtonTapped() {
         // Setup add card view controller
@@ -714,8 +732,14 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
     @IBOutlet weak var step1: UILabel!
     @IBOutlet weak var inProgressUpperLine: UIView!
     
+    @objc func appMovedToBackground() {
+        print("App moved to background!")
+       //setObject
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         step1ImageView.image = UIImage(named: circleImage)
         step2ImageView.image = UIImage(named: circleImage)
         step3ImageView.image = UIImage(named: circleImage)
@@ -1025,6 +1049,18 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
                                                     dateFormatter.dateFormat = "MMMM-dd-yyyy h:mm a"
                                                     let tempTimeString = self.vdlTimeLogs["studentPressesStart"] as! String
                                                     self.startTimerTime = dateFormatter.date(from: tempTimeString)!
+                                                    self.counter = self.startTimerTime.timeIntervalSinceNow
+                                                    
+                                                    if self.timer.isValid{
+                                                        self.timer.invalidate()
+                                                        self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.UpdateTimer), userInfo: nil, repeats: true)
+                                                    } else {
+                                                        self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.UpdateTimer), userInfo: nil, repeats: true)
+                                                    }
+                                                    
+                                                    
+                                                    
+                                                    
                                                     
                                                     self.ArrivalOrCompletionButton.setTitle("Finish Job", for: .normal)
                                                     self.ArrivalOrCompletionButton.isEnabled = true
