@@ -18,6 +18,7 @@
 		315A5496202FB53100D16191 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 315A5495202FB53100D16191 /* MapKit.framework */; };
 		31B217852016786200DD9D5D /* DirectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B217842016786200DD9D5D /* DirectionCell.swift */; };
 		31B21787201693A100DD9D5D /* JobPostStep3RangeOfDates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B21786201693A100DD9D5D /* JobPostStep3RangeOfDates.swift */; };
+		31B4BE75203797EE00206125 /* LaunchScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B4BE74203797EE00206125 /* LaunchScreenViewController.swift */; };
 		31BACF622015280700AFB816 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31BACF612015280700AFB816 /* MapViewController.swift */; };
 		31CE1FE21FDCB5C500B783CF /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31CE1FE11FDCB5C500B783CF /* AssetsLibrary.framework */; };
 		31CE1FE41FDCB5CF00B783CF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31CE1FE31FDCB5CF00B783CF /* CoreGraphics.framework */; };
@@ -133,6 +134,7 @@
 		315A5495202FB53100D16191 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		31B217842016786200DD9D5D /* DirectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionCell.swift; sourceTree = "<group>"; };
 		31B21786201693A100DD9D5D /* JobPostStep3RangeOfDates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobPostStep3RangeOfDates.swift; sourceTree = "<group>"; };
+		31B4BE74203797EE00206125 /* LaunchScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenViewController.swift; sourceTree = "<group>"; };
 		31BACF612015280700AFB816 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		31CE1FE11FDCB5C500B783CF /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		31CE1FE31FDCB5CF00B783CF /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -413,6 +415,7 @@
 				314C313D1FCC8CD900345E8E /* convertcsv.json */,
 				31E5026620054EF300CD4CA6 /* DealsViewController.swift */,
 				31BACF612015280700AFB816 /* MapViewController.swift */,
+				31B4BE74203797EE00206125 /* LaunchScreenViewController.swift */,
 			);
 			path = QuikFix;
 			sourceTree = "<group>";
@@ -1035,6 +1038,7 @@
 				3B200B4A1F857C2B00D40997 /* JobReplyCollectionViewCell.swift in Sources */,
 				3B2D16F01F8573BB00C85C0F /* JobResponseViewController.swift in Sources */,
 				311B1510202CF05F00DE8F84 /* AddGeotificationViewController.swift in Sources */,
+				31B4BE75203797EE00206125 /* LaunchScreenViewController.swift in Sources */,
 				3B200B501F86AB1C00D40997 /* FindAvailableWorkersViewController.swift in Sources */,
 				3B144E131F7983220088A1D0 /* JobPostTimeViewController.swift in Sources */,
 				311B150E202CEE6600DE8F84 /* Geotification.swift in Sources */,

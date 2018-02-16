@@ -759,6 +759,7 @@ class SingleJobPostViewController: UIViewController, MessagingDelegate, STPPayme
         Database.database().reference().child("students").child(Auth.auth().currentUser!.uid).child("twelveHoursToStart").removeValue()
     }
     
+    @IBOutlet weak var detailsLabel: UILabel!
     @IBOutlet weak var posterName: UILabel!
     var job = [String: Any]()
    // @IBOutlet weak var durationLabel: UILabel!
@@ -784,7 +785,7 @@ class SingleJobPostViewController: UIViewController, MessagingDelegate, STPPayme
                 for snap in snapshots{
                     var tempArray = [String]()
                     if snap.key == "address"{
-                        self.addressLabel.text = (snap.value as! [String]).first
+                        //self.addressLabel.text = (snap.value as! [String]).first
                     } else if snap.key == "pic"{
                         if let messageImageUrl = URL(string: snap.value as! String) {
                             
@@ -826,7 +827,9 @@ class SingleJobPostViewController: UIViewController, MessagingDelegate, STPPayme
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        if detailsLabel.text == nil || detailsLabel.text == "" || detailsLabel.text == "Info: " || detailsLabel.text == "Info:"{
+            detailsLabel.text == "Job Info"
+        }
         self.locationManager.requestAlwaysAuthorization()
         locationManager.delegate = self
         datesArray = self.job1.date!

@@ -61,6 +61,8 @@ class CreatePosterStep2: UIViewController, UITextFieldDelegate {
     var profPic = UIImage()
     var poster = JobPoster()
     var promoType = String()
+    var promoSender = [String:Any]()
+    var actualPromo = [String:Any]()
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if let vc = segue.destination as? CreatePosterStep3ViewController{
@@ -70,10 +72,12 @@ class CreatePosterStep2: UIViewController, UITextFieldDelegate {
             vc.crypt = self.crypt
             vc.locDict = self.locDict
             //vc.sender = "step2"
+            vc.promoSender = self.promoSender
             vc.promoSenderID = self.promoSenderID
             vc.promoType = self.promoType
             vc.promoData = self.promoData
             vc.promoSuccess = self.promoSuccess
+            vc.actualPromo = self.actualPromo
            // vc.promoData = self.promoData
             
         }

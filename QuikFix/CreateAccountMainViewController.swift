@@ -75,42 +75,33 @@ class CreateAccountMainViewController: UIViewController, UIImagePickerController
             return
             
         } else {
-           print("in the else")
+           print("in the Promo else")
            SwiftOverlays.showBlockingWaitOverlayWithText("Applying Promo...")
             Database.database().reference().child("jobPosters").observeSingleEvent(of: .value, with: { (snapshot) in
                 if let snapshots = snapshot.children.allObjects as? [DataSnapshot]{
                     for snap in snapshots{
                         if let tempDict = snap.value as? [String:Any]{
-                            if tempDict["availableCredits"] != nil {
-                            self.promoCredit = tempDict["availableCredits"] as! Int
-                                self.promoCredit = self.promoCredit + 5
-                                self.promo = (tempDict["promoCode"] as! [String: [String]])
-                                print("promo: \(self.promo)")
+                            let tempPromo = (tempDict["promoCode"] as! [String:Any])
+                                print("promo: \(tempPromo)")
                                 print("tf: \(self.promoCodeTF.text)")
-                                for (key, val) in self.promo{
+                                for (key, val) in tempPromo{
                                     
                                     if key == self.promoCodeTF.text{
                                         let tempArray = val as! [String]
-                                        /*if tempArray.contains(Auth.auth().currentUser!.uid){
-                                         let alert = UIAlertController(title: "Promo Code Reuse Error", message: "It appears that you have already used this promo code.", preferredStyle: UIAlertControllerStyle.alert)
-                                         alert.addAction(UIAlertAction(title: "okay", style: UIAlertActionStyle.default, handler: nil))
-                                         self.present(alert, animated: true, completion: nil)
-                                         return
-                                         
-                                         }*/
+                                        if tempDict["availableCredits"] != nil {
+                                        self.promoCredit = tempDict["availableCredits"] as! Int
+                                        self.promoCredit = self.promoCredit + 5
+                                        }
+                                        self.promo = (tempDict["promoCode"] as! [String: [String]])
+                                        
+                                        
+                                        self.actualPromo[key] = val
                                         self.promoSender[snap.key] = key
                                         self.promoSuccess = true
-                                        
-                                        
                                         break
-                            } else {
-                                continue
-                            }
-                            
-                                }
-                                
-                            } else {
-                                continue
+                                    }  else {
+                                        continue
+                                    }
                             }
                         }
                     }
@@ -120,35 +111,41 @@ class CreateAccountMainViewController: UIViewController, UIImagePickerController
                                 Database.database().reference().child("students").observeSingleEvent(of: .value, with: { (snapshot) in
                                     if let snapshots = snapshot.children.allObjects as? [DataSnapshot]{
                                         for snap in snapshots{
-                                            if let tempDict = snap.value as? [String:Any]{
-                                                if tempDict["availableCredits"] != nil{
-                                                self.promoCredit = tempDict["availableCredits"] as! Int
-                                                self.promoCredit = self.promoCredit + 5
-                                                self.promo = (tempDict["promoCode"] as! [String:Any])
-                                                print("promo: \(self.promo)")
-                                                for (key, val) in self.promo{
+                                            let tempDict = snap.value as? [String:Any]
+                                            let tempPromo = (tempDict!["promoCode"] as! [String:Any])
+                                                print("promo in student: \(tempPromo)")
+                                                for (key, val) in tempPromo{
                                                     if key == self.promoCodeTF.text{
                                                         let tempArray = val as! [String]
+                                                        self.actualPromo[key] = val
                                                        
                                                         self.promoSender[snap.key] = key
                                                         self.promoSuccess = true
+                                                        if tempDict!["availableCredits"] != nil{
+                                                            self.promoCredit = tempDict!["availableCredits"] as! Int
+                                                            self.promoCredit = self.promoCredit + 5
+                                                        }
+                                                        self.promo = (tempDict!["promoCode"] as! [String:Any])
                                                         //self.promoCredit = tempDict["availableCredits"] as! Int
                                                         break
+                                                    } else {
+                                                        continue
                                                     }
-                                                    }
-                                                    
-                                                } else {
-                                                    continue
-                                                }
                                             }
                                         }
                                         if self.promoSuccess == false {
+                                            print("promo not in students or posters")
+                                            SwiftOverlays.removeAllBlockingOverlays()
+                                            let alert = UIAlertController(title: "Promo Code Not Found", message: "Try re-entering the code you tried or try a new one.", preferredStyle: UIAlertControllerStyle.alert)
+                                            alert.addAction(UIAlertAction(title: "okay", style: UIAlertActionStyle.default, handler: nil
+                                            ))
+                                            self.present(alert, animated: true, completion: nil)
+                                            
                                             return
                                         }
                                         var uploadDict = [String:Any]()
                                         uploadDict["availableCredits"] =
                                             self.promoCredit
-                             
                                         uploadDict["promoCode"] = self.promo
                                         //self.topLabel.text = "Success!"
                                         self.promoSuccessLabel.isHidden = false
@@ -164,11 +161,9 @@ class CreateAccountMainViewController: UIViewController, UIImagePickerController
                                             self.studentPicLabel.text = "*Select a professional looking picture. Any inappropriate content will result in a ban."
                               
                                         } else {
-                                            
                                             self.studentPicLabel.text = "*Tap the circular profile button above to select a profile picture from your photos"
                                         }
                                         SwiftOverlays.removeAllBlockingOverlays()
-                                 
                                     }
                                 })
                             } else {
@@ -367,6 +362,7 @@ class CreateAccountMainViewController: UIViewController, UIImagePickerController
     var crypt = String()
     var locDict = [String:Any]()
     var sender = String()
+    var actualPromo = [String:Any]()
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "CreateStudent"{
@@ -377,6 +373,7 @@ class CreateAccountMainViewController: UIViewController, UIImagePickerController
                 vc.promoSenderID = self.promoSenderID
                 vc.promoType = self.promoType
                 vc.promoSender = self.promoSender
+                //vc.actualPromo = self.actualPromo
                 
             }
             

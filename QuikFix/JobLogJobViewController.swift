@@ -46,7 +46,7 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
     var seconds = Int()
     
     func UpdateTimer() {
-        
+        print("start of updateCounter, counter: \(counter)")
         let (h,m,s) = secondsToHoursMinutesSeconds(seconds: Int(counter))
         
         self.hours = h
@@ -55,7 +55,7 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
         
         counter = counter + 0.1
         
-        timerLabel.text = "\(h)hours \(m)minutes \(s)seconds"
+        timerLabel.text = "\(h)hrs \(m)min \(s)sec"
     }
     func studentStartsJobDatabaseUpload(){
         let dateFormatter = DateFormatter()
@@ -73,6 +73,8 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
         
        
     }
+    
+    @IBOutlet weak var jobInProgressLabel: UILabel!
     func finish(){
         timer.invalidate()
         let dateFormatter = DateFormatter()
@@ -93,6 +95,8 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
         
         print("localSendJob: \(sendJob), selfSendJob: \(self.sendJob), self.job: \(self.job)")
         
+        jobInProgressLabel.text = timerLabel.text
+        timerLabel.text = "Success! Job Completed."
         
         Database.database().reference().child("jobs").child(job.jobID!).child("timeLogs").child(Auth.auth().currentUser!.uid).updateChildValues(["studentPressesFinish": now])
         Database.database().reference().child("students").child(Auth.auth().currentUser!.uid).child("upcomingJobs").child(job.jobID!).child("timeLogs").child(Auth.auth().currentUser!.uid).updateChildValues(["studentPressesFinish": now])
@@ -989,8 +993,20 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
                                                 } else {
                                                     var startTimerTimeString = self.vdlTimeLogs["studentPressesStart"] as! String
                                                     //job in progress
-                                                    if self.timer.isValid == true{
-                                                        self.timer.fire()
+                                                    
+                                                    let dateFormatter = DateFormatter()
+                                                    dateFormatter.dateFormat = "MMMM-dd-yyyy h:mm a"
+                                                    let tempTimeString = self.vdlTimeLogs["studentPressesStart"] as! String
+                                                    self.startTimerTime = dateFormatter.date(from: tempTimeString)!
+                                                    self.counter = self.startTimerTime.timeIntervalSinceNow
+                                                    
+                                                    if self.timer.isValid{
+                                                        print("timerValid")
+                                                        self.timer.invalidate()
+                                                        self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.UpdateTimer), userInfo: nil, repeats: true)
+                                                    } else {
+                                                        print("timerInvalid")
+                                                        self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.UpdateTimer), userInfo: nil, repeats: true)
                                                     }
                                                      self.jobHasStartedView.isHidden = false
                                                     self.studentPressedFinish = false

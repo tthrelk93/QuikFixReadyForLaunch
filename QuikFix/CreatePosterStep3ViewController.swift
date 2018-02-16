@@ -28,7 +28,7 @@ class CreatePosterStep3ViewController: UIViewController, UITextFieldDelegate, ST
     
     
     
-    
+    var actualPromo = [String:Any]()
     var stripeToken = String()
     let settingsVC = SettingsViewController()
     @IBOutlet var orLabel: UILabel!
@@ -38,6 +38,7 @@ class CreatePosterStep3ViewController: UIViewController, UITextFieldDelegate, ST
     var skip = false
     var promoData = [String:Any]()
     var promoSuccess = Bool()
+    var promoSender = [String:Any]()
     @IBAction func savePressed(_ sender: Any) {
         if skip == true {
             Auth.auth().signIn(withEmail: poster.email!, password: crypt, completion: { (user: User?, error) in
@@ -98,6 +99,7 @@ class CreatePosterStep3ViewController: UIViewController, UITextFieldDelegate, ST
                             Database.database().reference().updateChildValues(["existingPromoCodes":self.existingPromoCodes])
                             if self.promoType == "student"{
                                 var tempArray = (self.promoData["promoCode"] as! [String:Any]).first?.value as! [String]
+                                print("promoFirstValBeforeAdd: \(tempArray)")
                                 if tempArray.first == ""{
                                     tempArray = [Auth.auth().currentUser!.uid]
                                 } else {
@@ -106,7 +108,6 @@ class CreatePosterStep3ViewController: UIViewController, UITextFieldDelegate, ST
                                 Database.database().reference().child("students").child(self.promoSenderID).child("promoCode").updateChildValues([((self.promoData["promoCode"] as! [String:Any]).first?.key)!: tempArray])
                                 Database.database().reference().updateChildValues(["existingPromoCodes":self.existingPromoCodes])
                                 Database.database().reference().child("students").child(self.promoSenderID).observeSingleEvent(of: .value, with: { (snapshot) in
-                                    
                                     if let snapshots = snapshot.children.allObjects as? [DataSnapshot]{
                                         for snap in snapshots{
                                             if snap.key == "availableCredits"{
@@ -138,18 +139,11 @@ class CreatePosterStep3ViewController: UIViewController, UITextFieldDelegate, ST
                                         }
                                     }
                                 })
-                            
-                            
                             }
-                            
                             self.performSegue(withIdentifier: "CreatePosterToProfile", sender: self)
-                            
-                            
                         }
                     })
-                    
                 }
-                
             })
         } else {
             Auth.auth().signIn(withEmail: self.poster.email!, password: self.crypt, completion: { (user: User?, error) in

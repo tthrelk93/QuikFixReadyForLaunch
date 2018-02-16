@@ -444,7 +444,7 @@ class ActualFinalizeViewController: UIViewController, UITextFieldDelegate, STPAd
             var dateString = dateFormatter.string(from: Date())
             values["datePosted"] = dateString
             values["additInfo"] = self.jobPost.additInfo
-            values["payment"] = self.totalFinalCost.text
+            values["payment"] = "$\(String(describing:self.calcRate))"
             values["serviceFees"] = String(describing: self.addRate)
             values["startTime"] = self.jobPost.startTime
             values["jobDuration"] = self.jobPost.jobDuration

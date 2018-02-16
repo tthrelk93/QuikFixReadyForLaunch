@@ -766,8 +766,8 @@ class studentProfile: UIViewController, UIScrollViewDelegate, UITextViewDelegate
         addGeotificationViewController(didAddCoordinate: testCoord, radius: 50.0, identifier: "gTown1", note: "just a geo test", eventType: EventType.onEntry, studentID: Auth.auth().currentUser!.uid)
         addGeotificationViewController(didAddCoordinate: testCoord2, radius: 50.0, identifier: "gTown2", note: "just a geo test2", eventType: EventType.onEntry,studentID: Auth.auth().currentUser!.uid)
         addGeotificationViewController(didAddCoordinate: testCoord3, radius: 50.0, identifier: "gTown3", note: "just a geo test3", eventType: EventType.onEntry,studentID: Auth.auth().currentUser!.uid)
-        addGeotificationViewController(didAddCoordinate: testCoord4, radius: 15.0, identifier: "gTown4", note: "just a geo test4", eventType: EventType.onEntry,studentID: Auth.auth().currentUser!.uid)
-        addGeotificationViewController(didAddCoordinate: testCoord5, radius: 30.0, identifier: "gTown5", note: "just a geo test5", eventType: EventType.onEntry,studentID: Auth.auth().currentUser!.uid)
+        addGeotificationViewController(didAddCoordinate: testCoord4, radius: 50.0, identifier: "gTown4", note: "just a geo test4", eventType: EventType.onEntry,studentID: Auth.auth().currentUser!.uid)
+        addGeotificationViewController(didAddCoordinate: testCoord5, radius: 50.0, identifier: "gTown5", note: "just a geo test5", eventType: EventType.onEntry,studentID: Auth.auth().currentUser!.uid)
         print("geoShitAfterRemoveAndAdd: \(locationManager.monitoredRegions)")
         loadAllGeotifications()
         print("geoshit: \(locationManager.monitoredRegions)")
@@ -791,11 +791,11 @@ class studentProfile: UIViewController, UIScrollViewDelegate, UITextViewDelegate
         editMenuView.layer.cornerRadius = 7
         editMenuView.layer.masksToBounds = false
         editMenuView.clipsToBounds = true
-        SwiftOverlays.removeAllOverlaysFromView(self.view)
-        SwiftOverlays.removeAllBlockingOverlays()
+        //SwiftOverlays.removeAllOverlaysFromView(self.view)
+        //SwiftOverlays.removeAllBlockingOverlays()
         tabBar.delegate = self
         scrollView.bounces = false
-        SwiftOverlays.removeAllBlockingOverlays()
+       // SwiftOverlays.removeAllBlockingOverlays()
         
        
         if sender == "student"{
@@ -944,6 +944,8 @@ class studentProfile: UIViewController, UIScrollViewDelegate, UITextViewDelegate
                     }*/
                 }
             }
+            SwiftOverlays.removeAllBlockingOverlays()
+            
             self.expTableView.delegate = self
             self.expTableView.dataSource = self
             DispatchQueue.main.async{
@@ -1222,7 +1224,7 @@ class studentProfile: UIViewController, UIScrollViewDelegate, UITextViewDelegate
         let picker = UIImagePickerController()
         picker.delegate = self
         //Messaging.messaging().delegate = self
-        SwiftOverlays.removeAllBlockingOverlays()
+       // SwiftOverlays.removeAllBlockingOverlays()
         loadPageData()
         
         

@@ -87,10 +87,32 @@ class LoginCreateAccountViewController: UIViewController, UITextFieldDelegate, M
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var userNameTextField: UITextField!
      var isListening = false
+    
+    fileprivate var animationOptions: UIViewAnimationOptions = [.curveEaseInOut, .beginFromCurrentState]
+   
+    
+        
+        // Do any additional setup after loading the view.
+    
+
+    @IBOutlet weak var logo2: UIImageView!
+    @IBOutlet weak var logo1: UIImageView!
+    
+    @IBOutlet weak var animateView: UIView!
+    
+    
     override func viewDidLoad() {
        
         super.viewDidLoad()
         
+        UIView.animate(withDuration: 0.2, delay: 0.09, usingSpringWithDamping: 0.7, initialSpringVelocity: 2.0, options: animationOptions, animations: {
+            
+            self.logo1.bounds = self.logo2.bounds
+            self.logo1.frame.origin = self.logo2.frame.origin
+            self.animateView.isHidden = true
+            
+            
+        })
         userNameTextField.delegate = self
         passwordTextField.delegate = self
         var studentBool = false

@@ -1004,16 +1004,12 @@ class JobPosterProfileViewController: UIViewController, UIViewControllerTransiti
                         self.location = CLLocation(latitude: tempDict["lat"] as! CLLocationDegrees, longitude: tempDict["long"] as! CLLocationDegrees)
                         
                         let geoCoder = CLGeocoder()
-                        
                         geoCoder.reverseGeocodeLocation(self.location, completionHandler: { (placemarks, error) -> Void in
-                            
                             // Place details
                             var placeMark: CLPlacemark!
                             placeMark = placemarks?[0]
-                            
                             // Address dictionary
                             print(placeMark.addressDictionary as Any)
-                            
                             // City
                             if let city = placeMark.addressDictionary!["City"] as? NSString {
                                 print(city)
@@ -1022,11 +1018,7 @@ class JobPosterProfileViewController: UIViewController, UIViewControllerTransiti
                         })
                     }
                 }
-                /*if responseBool == false{
-                 self.responseBubble.isHidden = true
-                 } else {
-                 self.responseBubble.isHidden = false
-                 }*/
+                
                 if self.curListBool == false{
                     self.currentListingsCount.text = "0"
                 }

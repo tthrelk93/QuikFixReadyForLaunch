@@ -61,7 +61,7 @@ class DateTableViewCell: UITableViewCell, UICollectionViewDataSource,UICollectio
         cell.layer.borderColor = UIColor.clear.cgColor
         cell.posterName.text = self.jobsForDate[indexPath.row].category1
         cell.distLabel.text = ""
-        cell.rateLabel.text = "Rate: \(self.jobsForDate[indexPath.row].payment!)/hour"
+        cell.rateLabel.text = "Rate: \(self.jobsForDate[indexPath.row].payment!)"
         var tempString = ""
         var count = 0
         for date in (self.jobsForDate[indexPath.row].date!){

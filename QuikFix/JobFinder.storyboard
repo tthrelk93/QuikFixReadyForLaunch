@@ -748,6 +748,7 @@
                         <outlet property="jobCatLabel" destination="5qU-gH-0yL" id="IhX-P9-Ar6"/>
                         <outlet property="jobCompletedButton" destination="Nm9-ya-ltW" id="9o9-7Y-WXj"/>
                         <outlet property="jobHasStartedView" destination="KK7-mu-3Ed" id="CBO-gI-Vjr"/>
+                        <outlet property="jobInProgressLabel" destination="XEr-DF-96W" id="vu8-Dp-SBZ"/>
                         <outlet property="lowerButtonSep1" destination="rvY-UL-Yku" id="1Vj-cv-KvQ"/>
                         <outlet property="lowerButtonSep2" destination="8ii-Ku-fy8" id="WgU-a5-2X3"/>
                         <outlet property="lowerButtonSep3" destination="Euo-UT-SqI" id="edP-uk-LMi"/>

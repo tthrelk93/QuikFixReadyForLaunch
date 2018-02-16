@@ -201,6 +201,7 @@ class CreateAccountJobPosterViewController: UIViewController, UITextFieldDelegat
     }
 
 
+    var promoSender = [String:Any]()
     var promoData = [String:Any]()
     var promoSuccess = Bool()
     @IBOutlet weak var confirmPasswordTextField: UITextField!
@@ -312,6 +313,9 @@ class CreateAccountJobPosterViewController: UIViewController, UITextFieldDelegat
     var crypt = String()
     var promoSenderID = String()
     var promoType = String()
+   
+    var actualPromo = [String:Any]()
+    
     //var promoSuccess = Bool()
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
@@ -323,8 +327,11 @@ class CreateAccountJobPosterViewController: UIViewController, UITextFieldDelegat
             vc.locDict = self.locDict
             vc.promoData = self.promoData
             vc.promoSuccess = self.promoSuccess
+            vc.promoSender = self.promoSender
             vc.promoType = self.promoType
             vc.promoSenderID = self.promoSenderID
+            vc.actualPromo = self.actualPromo
+            
             
         }
     }

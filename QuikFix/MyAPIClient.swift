@@ -189,6 +189,7 @@ class MyAPIClient: NSObject, STPEphemeralKeyProvider {
                     }
                 }
                 print("stripeToken inside charge: \(self.stripeToken)")
+                print("amount: \(amount)")
         let url = self.baseURL.appendingPathComponent("charge")
                 let params: [String: Any] = [
             "amount": amount,
@@ -199,6 +200,7 @@ class MyAPIClient: NSObject, STPEphemeralKeyProvider {
             .validate(statusCode: 200..<600)
             .responseString { response in
                 switch response.result {
+                    
                 case .success:
                    var containsUpcomingJobs = false
                    var containsJobsCompleted = false
@@ -253,12 +255,12 @@ class MyAPIClient: NSObject, STPEphemeralKeyProvider {
                                     uploadDict["upcomingJobs"] = tempJobArray
                                     Database.database().reference().child("jobPosters").child(poster).updateChildValues(uploadDict)
                                 } else if snap.key == "jobsCompleted"{
-                                    containsJobsCompleted = true
+                                    /*containsJobsCompleted = true
                                     var tempJobArray = snap.value as! [String:[String:Any]]
                                     tempJobArray[job["jobID"] as! String] = jobDict
                                     var uploadDict = [String:Any]()
                                     uploadDict["jobsCompleted"] = tempJobArray
-                                    Database.database().reference().child("jobPosters").child(poster).updateChildValues(uploadDict)
+                                    Database.database().reference().child("jobPosters").child(poster).updateChildValues(uploadDict)*/
                                 } else if snap.key == "completedWaitingReview"{
                                     containsWaiting = true
                                     var tempJobArray = snap.value as! [String: [String:Any]]
@@ -279,9 +281,9 @@ class MyAPIClient: NSObject, STPEphemeralKeyProvider {
                                 uploadDict["upcomingJobs"] = uploadData
                             }
                             if containsJobsCompleted == false {
-                                var uploadData = [String:[String:Any]]()
+                               /* var uploadData = [String:[String:Any]]()
                                 uploadData[job["jobID"] as! String] = jobDict
-                                uploadDict["jobsCompleted"] = uploadData
+                                uploadDict["jobsCompleted"] = uploadData*/
                             }
                             Database.database().reference().child("jobPosters").child(poster).updateChildValues(uploadDict)
                     }
@@ -305,11 +307,11 @@ class MyAPIClient: NSObject, STPEphemeralKeyProvider {
                                     containsJobs = true
                                 }
                                 if snap.key == "jobsCompleted"{
-                                    containsCompleted = true
+                                   /* containsCompleted = true
                                     var tempJobArray = snap.value as! [String:[String:Any]]
                                     tempJobArray[job["jobID"] as! String] = jobDict
                                     
-                                    uploadDict2["jobsCompleted"] = tempJobArray
+                                    uploadDict2["jobsCompleted"] = tempJobArray*/
                                     
                                 }
                                 else if snap.key == "completedWaitingReview"{
@@ -322,8 +324,8 @@ class MyAPIClient: NSObject, STPEphemeralKeyProvider {
                             }
                             
                             if containsWaiting == false{
-                                var uploadData = [String]()
-                                uploadData.append(job["jobID"] as! String)
+                                var uploadData = [String:[String:Any]]()
+                                uploadData[job["jobID"] as! String] = jobDict
                                 uploadDict2["completedWaitingReview"] = uploadData
                             }
                                 if containsJobs == false{
@@ -331,9 +333,9 @@ class MyAPIClient: NSObject, STPEphemeralKeyProvider {
                                     uploadDict2["upcomingJobs"] = tempJobArray
                             }
                                 if containsCompleted == false{
-                                    uploadDict2["jobsCompleted"] = [job["jobID"] as! String]
+                                    //uploadDict2["jobsCompleted"] = [job["jobID"] as! String]
                                 } else {
-                                    uploadDict2["jobsCompleted"] = tempCompletedArray
+                                    //uploadDict2["jobsCompleted"] = tempCompletedArray
                             }
                                 Database.database().reference().child("students").child((Auth.auth().currentUser?.uid)!).updateChildValues(uploadDict2)
                         }

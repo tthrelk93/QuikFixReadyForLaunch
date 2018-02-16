@@ -200,7 +200,7 @@ class JobPostViewController: UIViewController, UITableViewDelegate, UITableViewD
                         var tempPayString = tempDict["payment"] as! String
                         tempPayString = tempPayString.replacingOccurrences(of: "$", with: "")
                         let tempPayDouble = ((Double(tempPayString)! * 0.6) / (tempDict["workerCount"] as! Double))
-                        tempPayString = "$\(tempPayDouble)"
+                        tempPayString = "$\(tempPayDouble)/hour"
                         tempJob.payment = tempPayString
                         print("studentPayment: \(tempPayString)")
                         tempJob.startTime = (tempDict["startTime"] as! [[String]])
@@ -218,11 +218,13 @@ class JobPostViewController: UIViewController, UITableViewDelegate, UITableViewD
                         tempJob.posterID = (tempDict["posterID"] as! String)
                         //tempJob.paymentType = tempDict["paymentType"] as! Int
                         for date in tempJob.date!{
-                            if self.self.calendarDict.keys.contains(date){
-                                
+                            if self.calendarDict.keys.contains(date){
+                                var tempJobArray = self.calendarDict[date]!
+                                tempJobArray.append(tempJob)
+                                self.calendarDict[tempJob.date!.first!] = tempJobArray
                             } else {
-                                if self.calendarDict[tempJob.date!.first!] != nil {
-                                    var tempJobArray = self.calendarDict[tempJob.date!.first!]!
+                                if self.calendarDict[date] != nil {
+                                    var tempJobArray = self.calendarDict[date]!
                                     var containsBool = false
                                     for (_, val) in self.calendarDict{
                                         let tempArray = val
@@ -235,13 +237,13 @@ class JobPostViewController: UIViewController, UITableViewDelegate, UITableViewD
                                             
                                         }
                                         if containsBool == true{
-                                            break
+                                            //break
                                         }
                                         
                                     }
                                     if containsBool == false {
                                         tempJobArray.append(tempJob)
-                                        self.calendarDict[tempJob.date!.first!] = tempJobArray
+                                        self.calendarDict[date] = tempJobArray
                                     }
                                     
                                 } else {
@@ -479,6 +481,7 @@ class JobPostViewController: UIViewController, UITableViewDelegate, UITableViewD
                 vc.price = tempInt
                 vc.categoryType = self.categoryType
                 vc.product = self.stripeToken
+                
                 Database.database().reference().child("jobs").child(self.selectedJobID).observeSingleEvent(of: .value, with: { (snapshot) in
                     
                     if let snapshots = snapshot.children.allObjects as? [DataSnapshot]{
@@ -491,20 +494,23 @@ class JobPostViewController: UIViewController, UITableViewDelegate, UITableViewD
                                     vc.workerInJobAlready = true
                                 }
                             }
+                            if snap.key == "additInfo"{
+                                //vc.detailsLabel.text = snap.value as! String
+                            }
                             
                             if snap.key == "payment"{
                                 var tempPayString = snap.value as! String
                                 vc.chargeAmount = tempPayString.substring(from: 1)
                                 tempPayString = tempPayString.replacingOccurrences(of: "$", with: "")
                                 let tempPayDouble = ((Double(tempPayString)! * 0.6) / (tempDict["workerCount"] as! Double))
-                                tempPayString = "$\(tempPayDouble)"
+                                tempPayString = "$\(tempPayDouble)/hr"
                                 vc.rateLabel.text = tempPayString
                                 
                                 // self.rateLabel.text = tempPayString
                             } else if snap.key == "startTime"{
                                // vc.timeLabel.text = ((snap.value as! [[String]]).first!).first!
                             }else if snap.key == "additInfo"{
-                                vc.detailsTextView.text = snap.value as! String
+                                vc.detailsLabel.text = snap.value as! String
                                 
                             } else if snap.key == "posterID"{
                                 vc.posterID = snap.value as! String
