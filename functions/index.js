@@ -15,6 +15,8 @@
  */
 'use strict';
 
+const stripe = require('stripe')('STRIPE_TEST_SECRET_KEY');
+const request = require('request');
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
@@ -625,6 +627,49 @@ exports.sendTwelveHourNoticeToStudents = functions.database.ref('/students/{stud
 
 
 
+exports.finishStripeConnect = functions.database.ref('/students/{studentID}/{stripeConnectToken}/').onCreate(event => {
+  const studentUid = event.params.studentID;
+  //const stripeToken = event.params.stripeTok;
+  //const posterUid = admin.database().ref(`/students/${studentUid}/twelveHoursToStart`).once('value');
+  
+  const isAdmin = event.auth.admin;
+      
+  
+  console.log('Some one has accepted your job:', studentUid);
+
+  // Get the list of device notification tokens.
+const connectID = event.params.stripeConnectToken
+console.log('please work:', connectID);
+request.post('https://connect.stripe.com/oauth/token', {
+    form: {
+      client_secret: 'sk_test_LV43Yng4WPSPXvyNElx2dwg0',
+      code: connectID,
+      grant_type: 'authorization_code'
+    },
+    json: true
+  }, (err, response, body) => {
+    if (err || body.error) {
+      //console.log('The Stripe onboarding process has not succeeded1.', body.error);
+      console.log('The Stripe onboarding process has not succeeded2.', err);
+
+    } else {
+      // Update the model and store the Stripe account ID in the datastore.
+      // This Stripe account ID will be used to pay out to the pilot.
+      const stripeAccountId = body.stripe_user_id;
+      admin.database().ref(`/students/${studentUid}`).update({'stripeToken': stripeAccountId});
+
+    }
+	return Promise.all(connectID);
+
+});
+
+
+ 
+});
+
+
+
+
 //Firebase function triggered twelve hours before a job. Sent to students.
 
 exports.sendThreeHourNoticeToStudents = functions.database.ref('/students/{studentID}/threeHoursToStart/').onCreate(event => {
@@ -900,64 +945,14 @@ exports.unreadMessagesNoticeToStudents = functions.database.ref('/students/{stud
 });
 
 
-exports.unreadMessagesNoticeToPoster = functions.database.ref('/jobPosters/{posterID}/unreadMessages/').onCreate(event => {
-  const posterUid = event.params.posterID;
+//exports.unreadMessagesNoticeToPoster = functions.database.ref('/jobPosters/{posterID}/unreadMessages/').onCreate(event => {
+ // const posterUid = event.params.posterID;
   //**const posterUid = admin.database().ref(`/students/${studentUid}/threeHoursToStart`).once('value');
   
-  const isAdmin = event.auth.admin;
+  //const isAdmin = event.auth.admin;
       
   
   //console.log('Some one has accepted your job:', posterUid);
 
   // Get the list of device notification tokens.
-  const getDeviceTokensPromise = admin.database().ref(`/jobPosters/${posterUid}/deviceToken`).once('value');
-
- 
-
-  return Promise.all([getDeviceTokensPromise]).then(results => {
-    const tokensSnapshot = results[0];
-   
-  console.log('There are', tokensSnapshot.numChildren(), 'tokens to send notifications to.', 'tokens', tokensSnapshot);
-    //console.log('Fetched follower profile', follower);
-
-    // Notification details.
-    const payload = {
-      notification: {
-        title: 'New Message!',
-        body: `You have received a new message.`,
-        icon: 'https://media.npr.org/assets/img/2017/04/25/istock-115796521_wide-2f8afeb04be5bf8290f13dd1a5a9e107f63ee2fd.jpg?s=1400'
-      }
-    };
-
-    
-    const tokens = Object.keys(tokensSnapshot.val());
-
-    // Send notifications to all tokens.
-    return admin.messaging().sendToDevice(tokens, payload).then(response => {
-      // For each message check if there was an error.
-      const tokensToRemove = [];
-      response.results.forEach((result, index) => {
-        const error = result.error;
-        if (error) {
-          console.error('Failure sending notification to', tokens[index], error);
-          // Cleanup the tokens who are not registered anymore.
-          if (error.code === 'messaging/invalid-registration-token' ||
-              error.code === 'messaging/registration-token-not-registered') {
-            tokensToRemove.push(tokensSnapshot.ref.child(tokens[index]).remove());
-          }
-        }
-      });
-      return Promise.all(tokensToRemove);
-    });
-  });
-});
-
-
-
-
-
-
-
-
-
-
+  //const getDeviceTokensPromise = admin.database().ref(`/jobPosters/${posterUid}/deviceToken`).once('value');

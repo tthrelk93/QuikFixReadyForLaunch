@@ -716,7 +716,7 @@ class ActualFinalizeViewController: UIViewController, UITextFieldDelegate, STPAd
             self.homeToHomeView.isHidden = false
             self.pickupLabel.text = jobPost.pickupLocation
             self.dropoffLabel.text = jobPost.dropOffLocation
-            if (jobPost.tools?.contains("2 Trucks"))!{
+           /* if (jobPost.tools?.contains("2 Trucks"))!{
                  self.totalHaulingFee.text = "+ $20 Hauling Fee"
                 self.addRate = self.addRate + 20
             } else if (jobPost.tools?.contains("1 Truck"))!{
@@ -724,7 +724,7 @@ class ActualFinalizeViewController: UIViewController, UITextFieldDelegate, STPAd
                 self.addRate = self.addRate + 10
             } else {
                 self.totalHaulingFee.text = "+ $0 Hauling Fee"
-            }
+            }*/
            
             
         } else {

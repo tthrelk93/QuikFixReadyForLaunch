@@ -217,13 +217,58 @@ class JobPostViewController: UIViewController, UITableViewDelegate, UITableViewD
                         tempJob.jobID = (tempDict["jobID"] as! String)
                         tempJob.posterID = (tempDict["posterID"] as! String)
                         //tempJob.paymentType = tempDict["paymentType"] as! Int
-                        if self.calendarDict[tempJob.date!.first!] != nil {
-                            var tempJobArray = self.calendarDict[tempJob.date!.first!]!
-                            tempJobArray.append(tempJob)
-                            self.calendarDict[tempJob.date!.first!] = tempJobArray
-                        } else {
-                            self.calendarDict[tempJob.date!.first!] = [tempJob]
+                        for date in tempJob.date!{
+                            if self.self.calendarDict.keys.contains(date){
+                                
+                            } else {
+                                if self.calendarDict[tempJob.date!.first!] != nil {
+                                    var tempJobArray = self.calendarDict[tempJob.date!.first!]!
+                                    var containsBool = false
+                                    for (_, val) in self.calendarDict{
+                                        let tempArray = val
+                                        for job in tempArray{
+                                            if job.jobID == tempJob.jobID{
+                                                containsBool = true
+                                                break
+                                            }
+                                            
+                                            
+                                        }
+                                        if containsBool == true{
+                                            break
+                                        }
+                                        
+                                    }
+                                    if containsBool == false {
+                                        tempJobArray.append(tempJob)
+                                        self.calendarDict[tempJob.date!.first!] = tempJobArray
+                                    }
+                                    
+                                } else {
+                                    var containsBool = false
+                                    for (_, val) in self.calendarDict{
+                                        let tempArray = val
+                                        for job in tempArray{
+                                            if job.jobID == tempJob.jobID{
+                                                containsBool = true
+                                                break
+                                            }
+                                            if containsBool == true{
+                                                break
+                                            }
+                                            
+                                        }
+                                        
+                                    }
+                                    if containsBool == false {
+                                        self.calendarDict[tempJob.date!.first!] = [tempJob]
+                                    }
+                                    
+                                }
+                            }
                         }
+                        
+                        
                     }
                     
                     
@@ -256,10 +301,15 @@ class JobPostViewController: UIViewController, UITableViewDelegate, UITableViewD
                         let dateString = formatter.string(from: yourDate!)
                         self.datesArray.append(dateString)
                     }
+                    
+                    
+                    //self.calendarDict.removeAll()
+                    //var tempCount = 0
+                    
                     self.calendarTableView.delegate = self
                     self.calendarTableView.dataSource = self
                     DispatchQueue.main.async{
-                        self.calendarTableView.reloadData()
+                       self.calendarTableView.reloadData()
                     }
                     
                 })
@@ -278,6 +328,9 @@ class JobPostViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Do any additional setup after loading the view.
     }
 
+    var flipKeys = [String]()
+    var flipVals = [JobPost]()
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -305,7 +358,7 @@ class JobPostViewController: UIViewController, UITableViewDelegate, UITableViewD
         } else {
             noJobsLabel.isHidden = true
         }
-        return datesArray.count
+        return calendarDict.count
     }
     
     
@@ -325,10 +378,18 @@ class JobPostViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     var sizingCell: DateCollectionViewCell?
     func configureTableViewCell(tableView: UITableView, cell: DateTableViewCell, indexPath: IndexPath){
-        cell.dateLabel?.text = datesArray[indexPath.row]
+        jobsForDate.removeAll()
+        print("calendarDict: \(calendarDict)")
+        var tempArray = [String]()
+        for (key, _) in calendarDict{
+            tempArray.append(key)
+        }
+        tempArray.reverse()
+       
+        cell.dateLabel?.text = tempArray[indexPath.row]
         cell.layer.borderColor = UIColor.clear.cgColor
         for (key, val) in calendarDict{
-            if key == datesArray[indexPath.row]{
+            if key == tempArray[indexPath.row]{
                 print()
                 self.jobsForDate = (val )
                 cell.jobsForDate = val
