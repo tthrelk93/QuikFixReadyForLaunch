@@ -89,12 +89,23 @@ class JobPostTimeViewController: UIViewController, UIPickerViewDelegate, UIPicke
             
             currentDateLabel.text = jobPost.date![curIndex] as! String
             if selectType == "single"{
-            let jobTime = "\(hourData[hourPicker.selectedRow(inComponent: 0)]):\(minuteData[minutePicker.selectedRow(inComponent: 0)]) \(amPMData[amPMPicker.selectedRow(inComponent: 0)])"
-            finalTimesArray.append([jobTime])
-            } else {
+                let jobTime = "\(hourData[hourPicker.selectedRow(inComponent: 0)]):\(minuteData[minutePicker.selectedRow(inComponent: 0)]) \(amPMData[amPMPicker.selectedRow(inComponent: 0)])"
+                if timesArray.count == 0{
+                    //alert that you must select date
+                    return
+                } else {
+                    finalTimesArray.append(timesArray)
+                    //timesArray.removeAll()
+                }
                 
-                finalTimesArray.append(timesArray)
-                timesArray.removeAll()
+            } else {
+                if timesArray.count == 0{
+                    //alert that you must select date
+                    return
+                } else {
+                    finalTimesArray.append(timesArray)
+                    timesArray.removeAll()
+                }
             }
             
             if curIndex == (jobPost.date?.count)! - 1 {
@@ -154,11 +165,15 @@ class JobPostTimeViewController: UIViewController, UIPickerViewDelegate, UIPicke
                     if edit == true {
                         performSegue(withIdentifier: "EditTimeToPostJob", sender: self)
                     } else {
-                        
+                        if finalTimesArray.count == 0{
+                            //alert
+                            return
+                        } else {
                         if jobPost.category1 == "Moving(Home-To-Home)"{
                             performSegue(withIdentifier: "SkipLocationSegue", sender: self)
                         } else {
                             performSegue(withIdentifier: "JPStep4ToStep5", sender: self)
+                        }
                         }
                     }
                 }

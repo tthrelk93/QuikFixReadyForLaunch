@@ -749,7 +749,7 @@ class studentProfile: UIViewController, UIScrollViewDelegate, UITextViewDelegate
         // 2
          UserDefaults.standard.removeObject(forKey: "savedItems")
         
-      var testCoord = CLLocationCoordinate2D(latitude: 35.101081, longitude:  -89.792666)
+     /* var testCoord = CLLocationCoordinate2D(latitude: 35.101081, longitude:  -89.792666)
         var testCoord2 = CLLocationCoordinate2D(latitude: 35.110195, longitude:  -89.794349)
         var testCoord3 = CLLocationCoordinate2D(latitude: 35.113667, longitude:  -89.805408)
         var testCoord4 = CLLocationCoordinate2D(latitude: 35.09121207961429, longitude:  -89.78952571749687)
@@ -767,7 +767,7 @@ class studentProfile: UIViewController, UIScrollViewDelegate, UITextViewDelegate
         addGeotificationViewController(didAddCoordinate: testCoord2, radius: 50.0, identifier: "gTown2", note: "just a geo test2", eventType: EventType.onEntry,studentID: Auth.auth().currentUser!.uid)
         addGeotificationViewController(didAddCoordinate: testCoord3, radius: 50.0, identifier: "gTown3", note: "just a geo test3", eventType: EventType.onEntry,studentID: Auth.auth().currentUser!.uid)
         addGeotificationViewController(didAddCoordinate: testCoord4, radius: 50.0, identifier: "gTown4", note: "just a geo test4", eventType: EventType.onEntry,studentID: Auth.auth().currentUser!.uid)
-        addGeotificationViewController(didAddCoordinate: testCoord5, radius: 50.0, identifier: "gTown5", note: "just a geo test5", eventType: EventType.onEntry,studentID: Auth.auth().currentUser!.uid)
+        addGeotificationViewController(didAddCoordinate: testCoord5, radius: 50.0, identifier: "gTown5", note: "just a geo test5", eventType: EventType.onEntry,studentID: Auth.auth().currentUser!.uid)*/
         print("geoShitAfterRemoveAndAdd: \(locationManager.monitoredRegions)")
         loadAllGeotifications()
         print("geoshit: \(locationManager.monitoredRegions)")

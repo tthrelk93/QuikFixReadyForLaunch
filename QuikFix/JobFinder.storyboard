@@ -21,14 +21,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" delaysContentTouches="NO" bouncesZoom="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="187" sectionHeaderHeight="-1" sectionFooterHeight="5" translatesAutoresizingMaskIntoConstraints="NO" id="fc1-f7-dmY">
+                            <tableView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" delaysContentTouches="NO" bouncesZoom="NO" dataMode="prototypes" style="plain" separatorStyle="default" sectionIndexMinimumDisplayRowCount="1" allowsSelection="NO" rowHeight="187" estimatedRowHeight="-1" sectionHeaderHeight="1" sectionFooterHeight="5" translatesAutoresizingMaskIntoConstraints="NO" id="fc1-f7-dmY">
                                 <rect key="frame" x="0.0" y="96" width="375" height="522"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="DateTableCell" id="s4l-Xq-s9Q" customClass="DateTableViewCell" customModule="QuikFix" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="187"/>
+                                        <rect key="frame" x="0.0" y="1" width="375" height="187"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="s4l-Xq-s9Q" id="yep-cf-kDq">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="186.5"/>
@@ -38,7 +38,7 @@
                                                     <rect key="frame" x="0.0" y="39" width="375" height="152"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="PAs-NB-aFx">
+                                                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="6" id="PAs-NB-aFx">
                                                         <size key="itemSize" width="355" height="150"/>
                                                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                                         <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -60,7 +60,7 @@
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                     <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="trailing" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="TF3-WS-8Qt">
-                                                                        <rect key="frame" x="0.0" y="33" width="355" height="113"/>
+                                                                        <rect key="frame" x="255" y="33" width="99" height="113"/>
                                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <fontDescription key="fontDescription" name=".SFNSDisplay" family=".SF NS Display" pointSize="38"/>
@@ -176,13 +176,13 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <items>
-                                    <tabBarItem title="Job Log" image="icons8-Order History-30" id="rai-Vd-2fC">
+                                    <tabBarItem title="" image="if_tools_2914520-2" id="rai-Vd-2fC">
                                         <inset key="imageInsets" minX="0.0" minY="4" maxX="0.0" maxY="-4"/>
                                     </tabBarItem>
-                                    <tabBarItem title="Job Finder" image="icons8-Search-30" id="2ar-ee-VtZ">
+                                    <tabBarItem title="" image="1814075-32" id="2ar-ee-VtZ">
                                         <inset key="imageInsets" minX="0.0" minY="4" maxX="0.0" maxY="-4"/>
                                     </tabBarItem>
-                                    <tabBarItem title="Profile" image="icons8-User-30" id="xuh-99-mEb">
+                                    <tabBarItem title="" image="2232337-48" id="xuh-99-mEb">
                                         <inset key="imageInsets" minX="0.0" minY="4" maxX="0.0" maxY="-4"/>
                                     </tabBarItem>
                                 </items>
@@ -232,7 +232,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                             </mapView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iWT-d7-b6y">
-                                <rect key="frame" x="9" y="28" width="54" height="30"/>
+                                <rect key="frame" x="9" y="28" width="53" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.19215686269999999" green="0.2901960784" blue="0.32156862749999998" alpha="0.87176262839999996" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="Back">
@@ -261,7 +261,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cB5-4b-N0G">
-                                                    <rect key="frame" x="41" y="5" width="323" height="48"/>
+                                                    <rect key="frame" x="42" y="5" width="322" height="48"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -439,17 +439,6 @@
                                 <color key="textColor" red="0.35091478298158207" green="0.35091478298158207" blue="0.35091478298158207" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="btJ-1N-t1K">
-                                <rect key="frame" x="0.0" y="534" width="375" height="59"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" title="Add / Subtract Time to Job">
-                                    <color key="titleColor" red="0.19215686269999999" green="0.2901960784" blue="0.32156862749999998" alpha="1" colorSpace="calibratedRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="addSubtractTimePressed:" destination="nGZ-tp-esi" eventType="touchUpInside" id="Pxh-iQ-Q5u"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zPp-5i-rQ8">
                                 <rect key="frame" x="187" y="70" width="188" height="55"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
@@ -569,7 +558,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="7x6-lw-24L">
-                                <rect key="frame" x="138" y="162" width="198" height="104"/>
+                                <rect key="frame" x="138" y="162" width="197" height="104"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Bj4-Vs-7Qy">
@@ -732,7 +721,6 @@
                     </view>
                     <connections>
                         <outlet property="ArrivalOrCompletionButton" destination="Rov-Cu-OIW" id="rLT-IA-gae"/>
-                        <outlet property="addSubtractButton" destination="btJ-1N-t1K" id="m4W-JE-0mw"/>
                         <outlet property="cellSelectedPic" destination="vkV-zn-ZBG" id="thI-37-UKy"/>
                         <outlet property="cellSelectedView" destination="Fqf-HJ-xv3" id="9nH-zV-xQO"/>
                         <outlet property="dateLabel" destination="uV7-bk-Kh4" id="FTU-Fy-kzc"/>
@@ -893,9 +881,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="icons8-Order History-30" width="30" height="30"/>
-        <image name="icons8-Search-30" width="30" height="30"/>
-        <image name="icons8-User-30" width="30" height="30"/>
+        <image name="1814075-32" width="32" height="32"/>
+        <image name="2232337-48" width="64" height="64"/>
+        <image name="if_tools_2914520-2" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="cyv-Qa-uIV"/>

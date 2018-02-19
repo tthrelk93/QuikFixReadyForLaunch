@@ -510,7 +510,7 @@ class JobPostViewController: UIViewController, UITableViewDelegate, UITableViewD
                             } else if snap.key == "startTime"{
                                // vc.timeLabel.text = ((snap.value as! [[String]]).first!).first!
                             }else if snap.key == "additInfo"{
-                                vc.detailsLabel.text = snap.value as! String
+                                //vc.detailsLabel.text = snap.value as! String
                                 
                             } else if snap.key == "posterID"{
                                 vc.posterID = snap.value as! String

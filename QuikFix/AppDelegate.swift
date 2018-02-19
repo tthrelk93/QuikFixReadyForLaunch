@@ -337,11 +337,12 @@ extension AppDelegate: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         if region is CLCircularRegion {
-            
+            print("locDidEnter")
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "MMMM-dd-yyyy h:mm a"
             let now = dateFormatter.string(from: Date())
             
+            print(note(fromRegionIdentifier: region.identifier)![2])
             Database.database().reference().child("jobs").child(note(fromRegionIdentifier: region.identifier)![0]).child("timeLogs").child(note(fromRegionIdentifier: region.identifier)![2]).updateChildValues(["studentOnLocation": now])
             handleEvent(forRegion: region)
             Database.database().reference().child("students").child(note(fromRegionIdentifier: region.identifier)![2]).child("upcomingJobs").child(note(fromRegionIdentifier: region.identifier)![0]).child("timeLogs").child(note(fromRegionIdentifier: region.identifier)![2]).updateChildValues(["studentOnLocation":now])

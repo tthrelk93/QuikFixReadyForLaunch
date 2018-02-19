@@ -584,10 +584,11 @@ class JobHistoryViewController: UIViewController, UITableViewDelegate, UITableVi
         for (key, _) in calendarDict{
             tempArray.append(key)
         }
+        tempArray.reverse()
         cell.dateLabel?.text = tempArray[indexPath.row]
         cell.layer.borderColor = UIColor.clear.cgColor
         for (key, val) in calendarDict{
-            if key == datesArray[indexPath.row]{
+            if key == tempArray[indexPath.row]{
                 
                 self.jobsForDate = (val as! [JobPost])
                 cell.jobsForDate = val as! [JobPost]

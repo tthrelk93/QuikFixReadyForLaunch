@@ -293,17 +293,18 @@ class MyAPIClient: NSObject, STPEphemeralKeyProvider {
                             var containsWaiting2 = false
                             var containsCompleted = false
                             //var upcomingArray = [String]()
-                            var tempJobArray = [String]()
+                            var tempJobArray = [String: [String:Any]]()
                             var tempCompletedArray = [String]()
                             var uploadDict2 = [String:Any]()
                             for snap in snapshots {
                                 if snap.key == "upcomingJobs"{
-                                    var tempJobDict = [String:Any]()
-                                    tempJobDict = snap.value as! [String:Any]
-                                    for (key, _) in tempJobDict{
-                                        tempJobArray.append(key)
+                                    var tempJobDict = [String: [String:Any]]()
+                                    tempJobDict = snap.value as! [String: [String:Any]]
+                                    for (key, val) in tempJobDict{
+                                        tempJobArray[key] = val
                                     }
-                                    tempJobArray.remove(at: tempJobArray.index(of: job["jobID"] as! String)!)
+                                    tempJobArray.removeValue(forKey: job["jobID"] as! String)
+                                    //tempJobArray.remove(at: tempJobArray.index(of: job["jobID"] as! String)!)
                                     containsJobs = true
                                 }
                                 if snap.key == "jobsCompleted"{

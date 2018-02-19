@@ -450,14 +450,18 @@ class JobPosterProfileViewController: UIViewController, UIViewControllerTransiti
             Database.database().reference().child("students").observeSingleEvent(of: .value, with: { (snapshot) in
             var containsJC = false
             if let snapshots = snapshot.children.allObjects as? [DataSnapshot]{
-                
+                var numCompleted = Int()
                 for snap in snapshots{
                     
                     if ((self.completedWaitingObjects[keys1[self.collectIndex]]!)["workers"] as! [String]).contains(snap.key){
                         let stud = snap.value as! [String:Any]
                         self.currentCollectData.append(stud)
+                        if stud["completedCount"] == nil{
+                            numCompleted = 1
+                        } else {
+                            numCompleted = (stud["completedCount"] as! Int) + 1
+                        }
                         
-                        let numCompleted = (stud["completedCount"] as! Int) + 1
                         let curRating = ((stud["rating"] as! Double) + rating) / Double(numCompleted)
                         print("updatedRating: \(curRating)")
                         if feedback == "Tap here to tell us any additional information about how this worker did (optional)" {

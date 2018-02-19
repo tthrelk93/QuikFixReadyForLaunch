@@ -77,6 +77,7 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
     @IBOutlet weak var jobInProgressLabel: UILabel!
     func finish(){
         timer.invalidate()
+        self.timer = Timer()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMMM-dd-yyyy h:mm a"
         let now = dateFormatter.string(from: Date())
@@ -112,7 +113,9 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
                     }
                 }
                 print("acountID: \(accountID)")
-                MyAPIClient.sharedClient.completeCharge(amount: Int(payoutAmountPennies), poster: self.job.posterID!, job: sendJob, senderScreen: "normCharge", jobDict: self.sendJob)
+                DispatchQueue.main.async{
+                    MyAPIClient.sharedClient.completeCharge(amount: Int(payoutAmountPennies), poster: self.job.posterID!, job: sendJob, senderScreen: "normCharge", jobDict: self.sendJob)
+                }
                 //----charge poster****
                 MyAPIClient.sharedClient.callPayoutStudent(accountID: accountID, amount: Int(payoutAmountPennies)){ responseObject, error in
                     // use responseObject and error here
@@ -133,7 +136,19 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
         
        
     }
-    
+    func posterConfirmsArrivalDatabaseUpload(){
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM-dd-yyyy h:mm a"
+        let now = dateFormatter.string(from: Date())
+        self.startTimerTime = Date()
+        //timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(UpdateTimer), userInfo: nil, repeats: true)
+        
+        //jobHasStartedView.isHidden = false
+        Database.database().reference().child("jobs").child(job.jobID!).child("timeLogs").child((job.workers?.first!)!).updateChildValues(["posterConfirmsArrival": now])
+        Database.database().reference().child("students").child((job.workers?.first!)!).child("upcomingJobs").child(job.jobID!).child("timeLogs").child((job.workers?.first!)!).updateChildValues(["posterConfirmsArrival": now])
+        
+        Database.database().reference().child("jobPosters").child(job.posterID!).child("upcomingJobs").child(job.jobID!).child("timeLogs").child((job.workers?.first!)!).updateChildValues(["posterConfirmsArrival": now])
+    }
     @IBOutlet weak var inProgressView: UIView!
     var startTimerTime = Date()
     @IBOutlet weak var ArrivalOrCompletionButton: UIButton!
@@ -185,8 +200,16 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
         } else {
             //Poster
             if ArrivalOrCompletionButton.titleLabel!.text == "Confirm Students Arrival" && studentOnsite == true {
+                if studentOnsite == true{
+                posterConfirmsArrivalDatabaseUpload()
                 ArrivalOrCompletionButton.setTitle("Job in Progress", for: .normal)
                 ArrivalOrCompletionButton.isEnabled = false
+                } else {
+                    let alert = UIAlertController(title: "Student not on Location", message: "Student must be at the job location to confirm their arrival and start the job.", preferredStyle: UIAlertControllerStyle.alert)
+                    alert.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                    return
+                }
                 
             } else if ArrivalOrCompletionButton.titleLabel!.text == "Confirm Students Arrival" && studentOnsite == false {
                 let alert = UIAlertController(title: "Student Not on Location", message: "The student must be at the job location to confirm arrival and start the job.", preferredStyle: UIAlertControllerStyle.alert)
@@ -353,8 +376,8 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
         dismiss(animated: true)
     }
     
-    @IBAction func addSubtractTimePressed(_ sender: Any) {
-    }
+   // @IBAction func addSubtractTimePressed(_ sender: Any) {
+   // }
     
     @IBOutlet weak var detailsLabel: UILabel!
     
@@ -393,6 +416,10 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
     }
     
     @IBAction func backButtonPressed(_ sender: Any) {
+        if timer.isValid {
+        timer.invalidate()
+        timer = Timer()
+        }
         performSegue(withIdentifier: "JobLogJobToJobLog", sender: self)
     }
     @IBOutlet weak var jobCompletedButton: UIButton!
@@ -670,6 +697,7 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
     var studentPressedStart = Bool()
     
     func monitorStudentOnLocation(){
+        if self.senderScreen == "student"{
         Database.database().reference().child("jobs").child(job.jobID!).child("timeLogs").child(Auth.auth().currentUser!.uid).observe(.childChanged, with: { (snapshot) in
             let timeLogsTemp = snapshot.value
             //self.timeLogs = timeLogsTemp
@@ -721,9 +749,63 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
             //do if statements to update button and progreess info
             //Determine if coordinate has changed
         })
+        } else {
+           //for student in workers
+            Database.database().reference().child("jobs").child(job.jobID!).child("timeLogs").child((job.workers?.first!)!).observe(.childChanged, with: { (snapshot) in
+                let timeLogsTemp = snapshot.value
+                //self.timeLogs = timeLogsTemp
+                
+                print("timeLogsChanged: \(timeLogsTemp), \(snapshot.value as! String)")
+                if snapshot.key == "studentOnLocation"{
+                    if snapshot.value as! String != "false"{
+                        self.step1ImageView.image = UIImage(named: self.checkImage)
+                        
+                        
+                        self.ArrivalOrCompletionButton.isEnabled = true
+                        self.studentOnsite = true
+                    } else {
+                        self.studentOnsite = false
+                        self.step1ImageView.image = UIImage(named: self.circleImage)
+                    }
+                } else if snapshot.key == "studentConfirmsArrival"{
+                    print("scl")
+                    if snapshot.value as! String != "false"{
+                        self.studentConfirmLocation = true
+                    } else {
+                        self.studentConfirmLocation = false
+                    }
+                } else if snapshot.key == "posterConfirmsArrival"{
+                    print("pcl")
+                    if snapshot.value as! String != "false"{
+                        self.posterConfirmLocation = true
+                        self.step2ImageView.image = UIImage(named: self.checkImage)
+                    } else {
+                        self.step2ImageView.image = UIImage(named: self.circleImage)
+                        self.posterConfirmLocation = false
+                    }
+                } else if snapshot.key == "studentPressesStart"{
+                    print("sps")
+                    if snapshot.value as! String != "false"{
+                        self.studentPressedStart = true
+                    } else {
+                        self.studentPressedStart = false
+                    }
+                } else if snapshot.key == "studentPressesFinish"{
+                    print("sps")
+                    if snapshot.value as! String != "false"{
+                        self.studentPressedFinish = true
+                    } else {
+                        self.studentPressedFinish = false
+                    }
+                }
+                
+                //do if statements to update button and progreess info
+                //Determine if coordinate has changed
+            })
+        }
     }
     var studentPressedFinish = Bool()
-    @IBOutlet weak var addSubtractButton: UIButton!
+    //@IBOutlet weak var addSubtractButton: UIButton!
     @IBOutlet weak var mapButton: UIButton!
     let checkImage = "Tick_Mark-128"
     let circleImage = "017314-black-ink-grunge-stamp-textures-icon-symbols-shapes-shapes-circle-clear"
@@ -749,7 +831,7 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
         step3ImageView.image = UIImage(named: circleImage)
         if self.jobType == "jc" || self.jobType == "cl"{
             self.jobCompletedButton.isHidden = true
-            self.addSubtractButton.isHidden = true
+            //self.addSubtractButton.isHidden = true
             lowerButtonSep1.isHidden = true
             lowerButtonSep2.isHidden = true
             lowerButtonSep3.isHidden = true
@@ -771,8 +853,6 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
                    
                         ArrivalOrCompletionButton.isEnabled = true
                 } else {
-                
-                        ArrivalOrCompletionButton.isEnabled = true
                     ArrivalOrCompletionButton.isEnabled = true
                     step1.text = "1: Wait for Student to Arrive"
                     step2.text = "2: Press Confirm Arrival"
@@ -1002,8 +1082,11 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
                                                     
                                                     if self.timer.isValid{
                                                         print("timerValid")
+                                                        
                                                         self.timer.invalidate()
+                                                        self.timer = Timer()
                                                         self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.UpdateTimer), userInfo: nil, repeats: true)
+                                                        
                                                     } else {
                                                         print("timerInvalid")
                                                         self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.UpdateTimer), userInfo: nil, repeats: true)
@@ -1012,20 +1095,22 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
                                                     self.studentPressedFinish = false
                                                     self.ArrivalOrCompletionButton.setTitle("Finish Job", for: .normal)
                                                     //---show in progress view that covers details with job start time and whether they are on location or not etc...
+                                                    
                                                 }
                                             } else {
                                                 self.studentPressedStart = false
+                                                self.ArrivalOrCompletionButton.setTitle("Start Job", for: .normal)
                                                 //student and poster have confirmed arrival but student hasn't pressed start
                                             }
                                         } else {
                                             //student on location and poster and student confirm arrival
                                             self.step2ImageView.image = UIImage(named: self.checkImage)
-                                            self.step3ImageView.image = UIImage(named: self.checkImage)
+                                            self.step3ImageView.image = UIImage(named: self.circleImage)
                                             self.studentConfirmLocation = true
-                                            self.posterConfirmLocation = true
+                                            self.posterConfirmLocation = false
                                             self.ArrivalOrCompletionButton.setTitle("Start Job", for: .normal)
-                                            self.ArrivalOrCompletionButton.isEnabled = false
-                                            self.ArrivalOrCompletionButton.isUserInteractionEnabled = false
+                                            self.ArrivalOrCompletionButton.isEnabled = true
+                                            self.ArrivalOrCompletionButton.isUserInteractionEnabled = true
                                         }
                                     } else {
                                         self.studentConfirmLocation = false
@@ -1037,7 +1122,7 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
                                              self.ArrivalOrCompletionButton.setTitle("Confirm Arrival at Job Site", for: .normal)
                                         } else {
                                             self.posterConfirmLocation = false
-                                            self.step3ImageView.image = UIImage(named: self.checkImage)
+                                            self.step3ImageView.image = UIImage(named: self.circleImage)
                                             self.ArrivalOrCompletionButton.setTitle("Confirm Arrival at Job Site", for: .normal)
                                         }
                                     }
@@ -1065,7 +1150,7 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
                                                     dateFormatter.dateFormat = "MMMM-dd-yyyy h:mm a"
                                                     let tempTimeString = self.vdlTimeLogs["studentPressesStart"] as! String
                                                     self.startTimerTime = dateFormatter.date(from: tempTimeString)!
-                                                    self.counter = self.startTimerTime.timeIntervalSinceNow
+                                                    self.counter = (self.startTimerTime.timeIntervalSinceNow) * -1
                                                     
                                                     if self.timer.isValid{
                                                         self.timer.invalidate()
@@ -1140,6 +1225,177 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
                     }
                     
                 }
+                
+                Database.database().reference().child("jobPosters").child(self.job.posterID!).observeSingleEvent(of: .value, with: { (snapshot) in
+                    
+                    if let snapshots = snapshot.children.allObjects as? [DataSnapshot]{
+                        var tempDict2 = [String:Any]()
+                        var tempDict = [String:Any]()
+                        var jobs = [String:Any]()
+                        for snap in snapshots {
+                            if snap.key == "upcomingJobs"{
+                                jobs = snap.value as! [String:Any]
+                                
+                                
+                                
+                            }
+                            if snap.key == "name"{
+                                tempDict["name"] = snap.value as! String
+                                
+                            }
+                            if snap.key == "pic"{
+                                tempDict["pic"] = snap.value as! String
+                                
+                            }
+                            if snap.key == "posterID"{
+                                tempDict["posterID"] = snap.value as! String
+                                
+                            }
+                            
+                        }
+                        if jobs.count != 0 {
+                            
+                            for (key, val) in jobs {
+                                if key == self.job.jobID{
+                                    var thisJob = val as! [String:Any]
+                                    let timeLogsTemp = thisJob["timeLogs"] as! [String:Any]
+                                    self.vdlTimeLogs = timeLogsTemp.values.first as! [String:Any]
+                                    
+                                }
+                            }
+                            if self.vdlTimeLogs["studentOnLocation"] as! String != "false"{
+                                self.studentOnsite = true
+                                self.step1ImageView.image = UIImage(named: self.checkImage)
+                                
+                                if self.vdlTimeLogs["studentConfirmsArrival"] as! String != "false"{
+                                    self.studentConfirmLocation = true
+                                    //self.step3ImageView.image = UIImage(named: self.checkImage)
+                                    if self.vdlTimeLogs["posterConfirmsArrival"] as! String != "false"{
+                                        self.posterConfirmLocation = true
+                                        self.step2ImageView.image = UIImage(named: self.checkImage)
+                                        if self.vdlTimeLogs["studentPressesStart"] as! String != "false"{
+                                            self.studentPressedStart = true
+                                            
+                                            if self.vdlTimeLogs["studentPressesFinish"] as! String != "false"{
+                                                 self.step3ImageView.image = UIImage(named: self.checkImage)
+                                                self.studentPressedFinish = true
+                                                self.ArrivalOrCompletionButton.setTitle("Job Completed", for: .normal)
+                                                self.ArrivalOrCompletionButton.isEnabled = false
+                                                self.ArrivalOrCompletionButton.isUserInteractionEnabled = false
+                                                //---show in progress view that covers details with job start time and whether they are on location or not AND shows how much they earned that job...
+                                            } else {
+                                                var startTimerTimeString = self.vdlTimeLogs["studentPressesStart"] as! String
+                                                //job in progress
+                                                let dateFormatter = DateFormatter()
+                                                dateFormatter.dateFormat = "MMMM-dd-yyyy h:mm a"
+                                                let tempTimeString = self.vdlTimeLogs["studentPressesStart"] as! String
+                                                self.startTimerTime = dateFormatter.date(from: tempTimeString)!
+                                                self.counter = self.startTimerTime.timeIntervalSinceNow
+                                                if self.timer.isValid{
+                                                    print("timerValid")
+                                                    self.timer.invalidate()
+                                                    self.timer = Timer()
+                                                    self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.UpdateTimer), userInfo: nil, repeats: true)
+                                                } else {
+                                                    print("timerInvalid")
+                                                    self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.UpdateTimer), userInfo: nil, repeats: true)
+                                                }
+                                                self.jobHasStartedView.isHidden = false
+                                                self.studentPressedFinish = false
+                                                self.ArrivalOrCompletionButton.setTitle("Finish Job", for: .normal)
+                                                //---show in progress view that covers details with job start time and whether they are on location or not etc...
+                                            }
+                                        } else {
+                                            self.studentPressedStart = false
+                                            //student and poster have confirmed arrival but student hasn't pressed start
+                                        }
+                                    } else {
+                                        //student on location and poster and student confirm arrival
+                                        self.step2ImageView.image = UIImage(named: self.circleImage)
+                                        //self.step3ImageView.image = UIImage(named: self.checkImage)
+                                        self.studentConfirmLocation = true
+                                        self.posterConfirmLocation = true
+                                        //self.ArrivalOrCompletionButton.setTitle("Start Job", for: .normal)
+                                        self.ArrivalOrCompletionButton.isEnabled = true
+                                        self.ArrivalOrCompletionButton.isUserInteractionEnabled = true
+                                    }
+                                } else {
+                                    self.studentConfirmLocation = false
+                                    //student on location but has yet to confirm arrival and poster confirmation is unkown
+                                    //self.step2ImageView.image = UIImage(named: self.circleImage)
+                                    if self.vdlTimeLogs["posterConfirmsArrival"] as! String != "false"{
+                                        self.posterConfirmLocation = true
+                                        self.step2ImageView.image = UIImage(named: self.checkImage)
+                                        self.ArrivalOrCompletionButton.setTitle("Waiting on student to confirm arrival", for: .normal)
+                                    } else {
+                                        self.posterConfirmLocation = false
+                                        self.step3ImageView.image = UIImage(named: self.checkImage)
+                                        self.ArrivalOrCompletionButton.setTitle("Confirm Students Arrival", for: .normal)
+                                    }
+                                }
+                            } else {
+                                self.studentOnsite = false
+                                self.step1ImageView.image = UIImage(named: self.circleImage)
+                                if self.vdlTimeLogs["studentConfirmsArrival"] as! String != "false"{
+                                   // self.step2ImageView.image = UIImage(named: self.checkImage)
+                                    if self.vdlTimeLogs["posterConfirmsArrival"] as! String != "false"{
+                                        self.step2ImageView.image = UIImage(named: self.checkImage)
+                                        if self.vdlTimeLogs["studentPressesStart"] as! String != "false"{
+                                            if self.vdlTimeLogs["studentPressesFinish"] as! String != "false"{
+                                                self.ArrivalOrCompletionButton.setTitle("Job Completed", for: .normal)
+                                                self.ArrivalOrCompletionButton.isEnabled = false
+                                                self.ArrivalOrCompletionButton.isUserInteractionEnabled = false
+                                                //---show in progress view that covers details with job start time and whether they are on location or not AND shows how much they earned that job...
+                                            } else {
+                                                //---job in progress
+                                                let dateFormatter = DateFormatter()
+                                                dateFormatter.dateFormat = "MMMM-dd-yyyy h:mm a"
+                                                let tempTimeString = self.vdlTimeLogs["studentPressesStart"] as! String
+                                                self.startTimerTime = dateFormatter.date(from: tempTimeString)!
+                                                self.counter = self.startTimerTime.timeIntervalSinceNow
+                                                if self.timer.isValid{
+                                                    self.timer.invalidate()
+                                                    self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.UpdateTimer), userInfo: nil, repeats: true)
+                                                } else {
+                                                    self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.UpdateTimer), userInfo: nil, repeats: true)
+                                                }
+                                                self.ArrivalOrCompletionButton.setTitle("Job in Progress", for: .normal)
+                                                self.ArrivalOrCompletionButton.isEnabled = false
+                                                self.ArrivalOrCompletionButton.isUserInteractionEnabled = false
+                                                //---show in progress view that covers details with job start time and whether they are on location or not etc...
+                                            }
+                                        } else {
+                                            //student and poster have confirmed arrival but student hasn't pressed start
+                                            self.step1ImageView.image = UIImage(named: self.circleImage)
+                                        }
+                                    } else {
+                                        self.step1ImageView.image = UIImage(named: self.circleImage)
+                                        self.step2ImageView.image = UIImage(named: self.circleImage)
+                                        self.step3ImageView.image = UIImage(named: self.circleImage)
+                                        self.ArrivalOrCompletionButton.setTitle("Confirm Students Arrival", for: .normal)
+                                        self.ArrivalOrCompletionButton.isEnabled = true
+                                        self.ArrivalOrCompletionButton.isUserInteractionEnabled = true
+                                    }
+                                    
+                                } else {
+                                    //student on location but has yet to confirm arrival and poster confirmation is unkown
+                                    self.step1ImageView.image = UIImage(named: self.circleImage)
+                                    self.step2ImageView.image = UIImage(named: self.circleImage)
+                                    self.step3ImageView.image = UIImage(named: self.circleImage)
+                                    if self.vdlTimeLogs["posterConfirmsArrival"] as! String != "false"{
+                                        self.step2ImageView.image = UIImage(named: self.checkImage)
+                                        self.ArrivalOrCompletionButton.setTitle("Confirm Students Arrival", for: .normal)
+                                    } else {
+                                        self.step3ImageView.image = UIImage(named: self.circleImage)
+                                        self.ArrivalOrCompletionButton.setTitle("Confirm Students Arrival", for: .normal)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                })
+                    
+                    
             if self.job.workers == nil{
                 
             } else {
@@ -1148,7 +1404,10 @@ class JobLogJobViewController: UIViewController, UICollectionViewDelegate, UICol
                 }
             
             })
+                
+                
         }
+            
 
         // Do any additional setup after loading the view.
     }
